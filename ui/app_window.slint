@@ -1,0 +1,93 @@
+import { HorizontalBox, VerticalBox } from "std-widgets.slint";
+
+// Reusable component for bar items to keep the code clean
+component BarItem inherits Rectangle {
+    in property <string> icon;
+    in property <string> value;
+    in property <brush> icon-color: #7aa2f7;
+
+    background: #24283b;
+    border-radius: 4px;
+    height: 30px;
+    padding-left: 8px;
+    padding-right: 8px;
+
+    HorizontalLayout {
+        spacing: 5px;
+        alignment: center;
+        Text {
+            text: root.icon;
+            color: root.icon-color;
+            font-size: 14px;
+        }
+        if (root.value != "") : Text {
+            text: root.value;
+            color: #c0caf5;
+            font-size: 12px;
+        }
+    }
+}
+
+export component AppWindow inherits Window {
+    // Increased width to accommodate new widgets
+    width: 900px;
+    height: 40px;
+    background: #1a1b26cc;
+    always-on-top: true;
+    no-frame: true;
+
+    // --- State Properties (to be linked to C++ later) ---
+    in property <string> clock-time: "12:00";
+    in property <string> cpu-load: "12%";
+    in property <string> mem-usage: "2.4G";
+    in property <string> bat-level: "85%";
+    in property <string> net-ssid: "Home_WiFi";
+    in property <string> vol-level: "50%";
+    in property <string> temp: "22°C";
+
+    HorizontalLayout {
+        padding: 5px;
+        spacing: 10px;
+        alignment: space-between;
+
+        // LEFT SECTION
+        HorizontalLayout {
+            spacing: 8px;
+            BarItem { icon: "󰣇"; value: ""; icon-color: #7aa2f7; } // Menu
+            BarItem { icon: "󰨇"; value: "1"; } // Workspaces
+            BarItem { icon: "󰆍"; value: "Terminal"; icon-color: #9ece6a; } // App Info
+        }
+
+        // MIDDLE SECTION: System Stats
+        HorizontalLayout {
+            spacing: 8px;
+            BarItem { icon: ""; value: root.cpu-load; icon-color: #f7768e; }
+            BarItem { icon: ""; value: root.mem-usage; icon-color: #e0af68; }
+            BarItem { icon: "󱊣"; value: root.bat-level; icon-color: #9ece6a; }
+        }
+
+        // RIGHT SECTION: Status & Clock
+        HorizontalLayout {
+            spacing: 8px;
+            BarItem { icon: "󰖐"; value: root.temp; icon-color: #73daca; } // Weather
+            BarItem { icon: "󰤨"; value: ""; } // WiFi
+            BarItem { icon: "󰂯"; value: ""; } // Bluetooth
+            BarItem { icon: "󰕾"; value: root.vol-level; } // Voice/Vol
+            BarItem { icon: "󰎟"; value: ""; } // Clipboard
+            BarItem { icon: "󰂚"; value: ""; } // Notifications
+
+            // Clock
+            Rectangle {
+                background: #7aa2f7;
+                border-radius: 4px;
+                padding-left: 10px;
+                padding-right: 10px;
+                Text {
+                    text: root.clock-time;
+                    color: #1a1b26;
+                    font-weight: 700;
+                }
+            }
+        }
+    }
+}
