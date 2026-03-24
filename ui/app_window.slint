@@ -1,91 +1,258 @@
-import { HorizontalBox, VerticalBox } from "std-widgets.slint";
-
-// Reusable component for bar items to keep the code clean
-component BarItem inherits Rectangle {
-    in property <string> icon;
-    in property <string> value;
-    in property <brush> icon-color: #7aa2f7;
-
-    background: #24283b;
-    border-radius: 4px;
-    height: 30px;
-    padding-left: 8px;
-    padding-right: 8px;
-
-    HorizontalLayout {
-        spacing: 5px;
-        alignment: center;
-        Text {
-            text: root.icon;
-            color: root.icon-color;
-            font-size: 14px;
-        }
-        if (root.value != "") : Text {
-            text: root.value;
-            color: #c0caf5;
-            font-size: 12px;
-        }
-    }
-}
-
 export component AppWindow inherits Window {
-    // Increased width to accommodate new widgets
-    width: 900px;
+    width: 1350px;
     height: 40px;
-    background: #1a1b26cc;
+    background: transparent;
     always-on-top: true;
     no-frame: true;
 
-    // --- State Properties (to be linked to C++ later) ---
-    in property <string> clock-time: "12:00";
-    in property <string> cpu-load: "12%";
-    in property <string> mem-usage: "2.4G";
-    in property <string> bat-level: "85%";
-    in property <string> net-ssid: "Home_WiFi";
-    in property <string> vol-level: "50%";
-    in property <string> temp: "22°C";
-
     HorizontalLayout {
-        padding: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
         spacing: 10px;
         alignment: space-between;
 
-        // LEFT SECTION
-        HorizontalLayout {
-            spacing: 8px;
-            BarItem { icon: "󰣇"; value: ""; icon-color: #7aa2f7; } // Menu
-            BarItem { icon: "󰨇"; value: "1"; } // Workspaces
-            BarItem { icon: "󰆍"; value: "Terminal"; icon-color: #9ece6a; } // App Info
+        // ============================================================
+        // LEFT AREA
+        // ============================================================
+        Rectangle {
+            background: transparent;
+            HorizontalLayout {
+                spacing: 5px;
+                alignment: center;
+
+                // WIDGET 1: LAUNCHER (Light Grey Glass)
+                Rectangle {
+                    background: #33333366; // Mid-grey glass
+                    border-radius: 16px;
+                    border-width: 1px;
+                    border-color: #ffffff1a;
+                    height: 28px;
+                    HorizontalLayout {
+                        padding-left: 5px;
+                        padding-right: 8px;
+                        alignment: center;
+
+                        Text {
+                            text: "";
+                            color: #eeeeee;
+                            font-size: 18px;
+                            min-width: 20px;
+                            horizontal-alignment: center;
+                            vertical-alignment: center;
+                        }
+                    }
+                }
+
+                // WIDGET 2: WORKSPACES (Dark Grey Glass)
+                Rectangle {
+                    background: #33333366; // Smoky grey glass
+                    border-radius: 12px;
+                    border-width: 1px;
+                    border-color: #ffffff0d;
+                    height: 28px;
+
+                    HorizontalLayout {
+                        padding-left: 10px;
+                        padding-right: 10px;
+                        spacing: 6px;
+                        alignment: center;
+
+                        for i in [1, 2, 3] : Rectangle {
+                            width: i == 1 ? 22px : 17px;
+                            height: 10px;
+                            background: i == 1 ? #ddddddcc : #66666666;
+                            border-radius: 5px;
+                            y: (parent.height - self.height) / 2;
+                        }
+                    }
+                }
+
+                // WIDGET 3: WINDOW TITLE
+                Rectangle {
+                    background: #44444433;
+                    border-radius: 10px;
+                    height: 28px;
+                    HorizontalLayout {
+                        padding-left: 12px;
+                        padding-right: 12px;
+                        alignment: center;
+                        Text {
+                            text: "Neovim ~ main.cpp";
+                            color: #cccccc;
+                            font-size: 13px;
+                            vertical-alignment: center;
+                        }
+                    }
+                }
+            }
         }
 
-        // MIDDLE SECTION: System Stats
-        HorizontalLayout {
-            spacing: 8px;
-            BarItem { icon: ""; value: root.cpu-load; icon-color: #f7768e; }
-            BarItem { icon: ""; value: root.mem-usage; icon-color: #e0af68; }
-            BarItem { icon: "󱊣"; value: root.bat-level; icon-color: #9ece6a; }
+        // ============================================================
+        // MIDDLE AREA
+        // ============================================================
+        Rectangle {
+            background: transparent;
+            HorizontalLayout {
+                alignment: center;
+
+                Rectangle {
+                    background: #33333380;
+                    border-radius: 14px;
+                    border-width: 1px;
+                    border-color: #ffffff1a;
+                    height: 30px;
+                    HorizontalLayout {
+                        alignment: center;
+
+                        HorizontalLayout {
+                            padding-left: 12px;
+                            padding-right: 8px;
+                            alignment: center;
+                            Text {
+                                text: "10:30 AM";
+                                color: #d8e3db;
+                                font-size: 14px;
+                                vertical-alignment: center;
+                            }
+                        }
+
+                        Rectangle {
+                            width: 1px;
+                            height: 14px;
+                            background: #66666680;
+                        }
+
+                        HorizontalLayout {
+                            padding-left: 8px;
+                            padding-right: 12px;
+                            alignment: center;
+                            Text {
+                                text: "Tue, Mar 24";
+                                color: #999999;
+                                font-size: 13px;
+                                vertical-alignment: center;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
-        // RIGHT SECTION: Status & Clock
-        HorizontalLayout {
-            spacing: 8px;
-            BarItem { icon: "󰖐"; value: root.temp; icon-color: #73daca; } // Weather
-            BarItem { icon: "󰤨"; value: ""; } // WiFi
-            BarItem { icon: "󰂯"; value: ""; } // Bluetooth
-            BarItem { icon: "󰕾"; value: root.vol-level; } // Voice/Vol
-            BarItem { icon: "󰎟"; value: ""; } // Clipboard
-            BarItem { icon: "󰂚"; value: ""; } // Notifications
+        // ============================================================
+        // RIGHT AREA
+        // ============================================================
+        Rectangle {
+            background: transparent;
+            HorizontalLayout {
+                spacing: 6px;
+                alignment: center;
 
-            // Clock
-            Rectangle {
-                background: #7aa2f7;
-                border-radius: 4px;
-                padding-left: 10px;
-                padding-right: 10px;
-                Text {
-                    text: root.clock-time;
-                    color: #1a1b26;
-                    font-weight: 700;
+                // CLIPBOARD
+                Rectangle {
+                    background: #33333366;
+                    border-radius: 12px;
+                    width: 35px;
+                    height: 30px;
+                    Text {
+                        text: "󰅍";
+                        color: #bbbbbb;
+                        font-size: 17px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                        min-width: 17px;
+                    }
+                }
+
+                // NOTIFICATIONS
+                Rectangle {
+                    background: #33333366;
+                    border-radius: 12px;
+                    width: 35px;
+                    height: 30px;
+                    Text {
+                        text: "󰂚";
+                        color: #bbbbbb;
+                        font-size: 17px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                        min-width: 17px;
+                    }
+                }
+
+                // CPU
+                Rectangle {
+                    background: #33333366;
+                    border-radius: 10px;
+                    border-width: 1px;
+                    border-color: #ffffff0d;
+                    height: 28px;
+                    HorizontalLayout {
+                        padding-left: 10px;
+                        padding-right: 12px;
+                        alignment: center;
+                        spacing: 5px;
+                        Text {
+                            text: "";
+                            color: #cccccc;
+                            font-size: 14px;
+                            min-width: 14px;
+                            vertical-alignment: center;
+                        }
+                        Text {
+                            text: "12%";
+                            color: #aaaaaa;
+                            font-size: 12.5px;
+                            vertical-alignment: center;
+                        }
+                    }
+                }
+
+                // RAM
+                Rectangle {
+                    background: #33333366;
+                    border-radius: 10px;
+                    border-width: 1px;
+                    border-color: #ffffff0d;
+                    height: 28px;
+                    HorizontalLayout {
+                        padding-left: 10px;
+                        padding-right: 12px;
+                        alignment: center;
+                        spacing: 6px;
+                        Text {
+                            text: "";
+                            color: #cccccc;
+                            font-size: 14px;
+                            min-width: 10px;
+                            vertical-alignment: center;
+                        }
+                        Text {
+                            text: "2.4G";
+                            color: #aaaaaa;
+                            font-size: 12.5px;
+                            vertical-alignment: center;
+                        }
+                    }
+                }
+
+                // CONNECTIVITY
+                Rectangle {
+                    background: #33333366;
+                    border-radius: 12px;
+                    border-width: 1px;
+                    border-color: #ffffff1a;
+                    height: 28px;
+                    HorizontalLayout {
+                        padding-left: 10px;
+                        padding-right: 10px;
+                        spacing: 8px;
+                        alignment: center;
+                        Text { text: "󰤨"; color: #eeeeee; font-size: 14px; min-width: 13px; vertical-alignment: center; }
+                        Text { text: "󰂯"; color: #eeeeee; font-size: 14px; min-width: 0px; vertical-alignment: center; }
+                        Text { text: "󰕾"; color: #eeeeee; font-size: 14px; min-width: 11px; vertical-alignment: center; }
+                    }
                 }
             }
         }
